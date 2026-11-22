@@ -248,17 +248,17 @@
 <div class="wrap">
   <header class="top">
     <div class="dateline">
-      <span>Sunday, November 22, 2026</span><span class="dot" aria-hidden="true"></span>
+      <span id="headerDate">Sunday, November 22, 2026</span><span class="dot" aria-hidden="true"></span>
       <span>Week 1 · November 22–28, 2026</span>
     </div>
     <h1>Family Devotional</h1>
-    <p class="lede">A devotional for the whole family to share together — <strong>today's reading up top</strong>, and every day of Week 1 below, ready to open and read as a family.</p>
+    <p class="lede">A devotional for the whole family to share together — <strong id="ledeHighlight">today's reading up top</strong>, and every day of Week 1 below, ready to open and read as a family.</p>
   </header>
 
   <!-- TODAY -->
   <div class="section-head anchor" id="today">
-    <h2>Today's devotional</h2>
-    <p>Read together in about 10 minutes</p>
+    <h2 id="todayHeading">Today's devotional</h2>
+    <p id="todaySub">Read together in about 10 minutes</p>
   </div>
   <article class="today-card" id="todayCard" aria-label="Today's devotional"></article>
 
@@ -267,7 +267,7 @@
     <h2>Week 1</h2>
     <p>Sunday, November 22 – Saturday, November 28 · tap any day to open it in the reader</p>
   </div>
-  <p class="week-intro">All seven days of the first week are here. Day 1 is today's reading above; tap any day below to open its full devotional — passage, thought, prayer, and an action to do together.</p>
+  <p class="week-intro" id="weekIntro">All seven days of the first week are here. Day 1 is today's reading above; tap any day below to open its full devotional — passage, thought, prayer, and an action to do together.</p>
   <ul class="plan-list" id="weekList"></ul>
 
   <!-- READER — hidden on load so today's devotional is not shown a second time;
@@ -436,8 +436,55 @@
     }
   ];
 
-  var TODAY_INDEX = 0;
+  // --- Weekly auto-select: pick the right day from the calendar ---
+  // Week 1 runs Sunday Nov 22 – Saturday Nov 28, 2026. DAYS[0] is Nov 22.
+  // No daily re-upload needed: the page checks the viewer's local date
+  // on open and shows that day's devotional up top.
+  var WEEK_START = new Date(2026, 10, 22); // Nov 22, 2026 (local)
+  function startOfDay(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  var nowDate = new Date();
+  var todayStart = startOfDay(nowDate);
+  var diffDays = Math.round((todayStart - WEEK_START) / 86400000);
+  var IS_IN_WEEK = diffDays >= 0 && diffDays < DAYS.length;
+  var IS_BEFORE_WEEK = diffDays < 0;
+  var IS_AFTER_WEEK = diffDays >= DAYS.length;
+  var WEEK_MODE = IS_IN_WEEK ? "today" : (IS_BEFORE_WEEK ? "upcoming" : "past");
+  var TODAY_INDEX = IS_IN_WEEK ? diffDays : (IS_BEFORE_WEEK ? 0 : DAYS.length - 1);
   var currentIndex = -1;
+
+  function formatLongDate(d){
+    try {
+      return d.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    } catch(e) {
+      return DAYS[TODAY_INDEX].date;
+    }
+  }
+
+  function renderChrome(){
+    var headerDate = document.getElementById("headerDate");
+    if (headerDate) headerDate.textContent = formatLongDate(nowDate);
+    var heading = document.getElementById("todayHeading");
+    var sub = document.getElementById("todaySub");
+    var ledeHighlight = document.getElementById("ledeHighlight");
+    var weekIntro = document.getElementById("weekIntro");
+    var d = DAYS[TODAY_INDEX];
+    if (WEEK_MODE === "today") {
+      if (heading) heading.textContent = "Today's devotional";
+      if (sub) sub.textContent = "Read together in about 10 minutes";
+      if (ledeHighlight) ledeHighlight.textContent = "today's reading up top";
+      if (weekIntro) weekIntro.textContent = "All seven days of the first week are here. Day " + d.day + " is today's reading above; tap any day below to open its full devotional — passage, thought, prayer, and an action to do together.";
+    } else if (WEEK_MODE === "upcoming") {
+      if (heading) heading.textContent = "Coming up — Day 1";
+      if (sub) sub.textContent = "Week 1 starts Sunday, November 22 — here's Day 1 to preview";
+      if (ledeHighlight) ledeHighlight.textContent = "Day 1 preview up top";
+      if (weekIntro) weekIntro.textContent = "All seven days of the first week are here. Week 1 starts Sunday, November 22 — Day 1 is previewed above; tap any day below to open its full devotional — passage, thought, prayer, and an action to do together.";
+    } else {
+      if (heading) heading.textContent = "Most recent devotional";
+      if (sub) sub.textContent = "Week 1 ended Saturday, November 28 — here's the last day";
+      if (ledeHighlight) ledeHighlight.textContent = "the most recent reading up top";
+      if (weekIntro) weekIntro.textContent = "All seven days of the first week are here. Week 1 has finished — Day 7 is shown above as the most recent reading; tap any day below to open its full devotional — passage, thought, prayer, and an action to do together.";
+    }
+  }
 
   function esc(s){
     return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -462,9 +509,14 @@
   function renderToday(){
     var d = DAYS[TODAY_INDEX];
     var el = document.getElementById("todayCard");
+    var kicker;
+    if (WEEK_MODE === "today") kicker = 'Today · Day ' + d.day + ' of Week 1';
+    else if (WEEK_MODE === "upcoming") kicker = 'Coming up · Day ' + d.day + ' of Week 1';
+    else kicker = 'Most recent · Day ' + d.day + ' of Week 1';
+    el.setAttribute("aria-label", WEEK_MODE === "today" ? "Today's devotional" : (WEEK_MODE === "upcoming" ? "Coming up — Day 1 devotional" : "Most recent devotional"));
     el.innerHTML =
       '<div class="today-banner"><div class="tb-left"><span class="sun-ic">' + sunSVG + '</span>' +
-      '<div><p class="tb-kicker">Today · Day ' + d.day + ' of Week 1</p>' +
+      '<div><p class="tb-kicker">' + esc(kicker) + '</p>' +
       '<p class="tb-title">' + esc(d.title) + '</p></div></div>' +
       '<span class="tb-date">' + esc(d.date) + '</span></div>' +
       '<div class="today-body">' + devotionalBody(d) + '</div>';
@@ -475,14 +527,15 @@
     list.innerHTML = "";
     DAYS.forEach(function(d, i){
       var li = document.createElement("li");
-      if (i === TODAY_INDEX) li.className = "today";
+      var isToday = IS_IN_WEEK && i === TODAY_INDEX;
+      if (isToday) li.className = "today";
       if (i === currentIndex) li.classList.add("selected");
       li.setAttribute("role","button");
       li.setAttribute("tabindex","0");
       li.setAttribute("aria-label","Open Day " + d.day + ": " + d.title);
       li.innerHTML =
         '<span class="pn" aria-hidden="true">' + d.day + '</span>' +
-        '<div><div class="pt">Day ' + d.day + ' — ' + esc(d.title) + (i === TODAY_INDEX ? ' · Today' : '') + '</div>' +
+        '<div><div class="pt">Day ' + d.day + ' — ' + esc(d.title) + (isToday ? ' · Today' : '') + '</div>' +
         '<div class="pr">' + esc(d.date) + ' · ' + esc(d.ref) + '</div></div>' +
         '<span class="pr-tap">Tap to read →</span>';
       li.addEventListener("click", function(){ openDay(i, true); });
@@ -497,7 +550,7 @@
     currentIndex = i;
     var d = DAYS[i];
     var reader = document.getElementById("reader");
-    document.getElementById("readerBadge").textContent = "Day " + d.day + (i === TODAY_INDEX ? " · Today" : "");
+    document.getElementById("readerBadge").textContent = "Day " + d.day + ((IS_IN_WEEK && i === TODAY_INDEX) ? " · Today" : "");
     document.getElementById("readerTitle").textContent = d.title;
     document.getElementById("readerMeta").textContent = d.date + " · " + d.ref;
     document.getElementById("readerBody").innerHTML = devotionalBody(d);
@@ -521,6 +574,7 @@
     document.getElementById("week").scrollIntoView({behavior:"smooth", block:"start"});
   });
 
+  renderChrome();
   renderToday();
   renderWeek();
 })();
