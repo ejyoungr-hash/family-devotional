@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Family Devotional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#fdf6ec;
+    --bg-soft:#f7ead6;
+    --card:#fffdf8;
+    --card-2:#fbf1de;
+    --ink:#3d2b1f;
+    --ink-soft:#5f4636;
+    --muted:#8a6f5c;
+    --line:#e6d3b8;
+    --line-strong:#d3b48c;
+    --gold:#b8860b;
+    --gold-strong:#9a6d06;
+    --gold-soft:#f6e8c8;
+    --terra:#c05f33;
+    --terra-strong:#a34e27;
+    --terra-bg:#c05f33;
+    --terra-soft:#f9e3d3;
+    --shadow:0 10px 30px rgba(122,72,32,.14), 0 2px 6px rgba(122,72,32,.10);
+    --radius:18px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme:dark;
+      --bg:#241a12;
+      --bg-soft:#2e2115;
+      --card:#32241a;
+      --card-2:#3b2a1d;
+      --ink:#f7ead6;
+      --ink-soft:#e3cdb2;
+      --muted:#b99c7e;
+      --line:#55402c;
+      --line-strong:#6f543a;
+      --gold:#e3b959;
+      --gold-strong:#f0cd7e;
+      --gold-soft:#4a3a1c;
+      --terra:#e08a5f;
+      --terra-strong:#eda87f;
+      --terra-bg:#8a4322;
+      --terra-soft:#4a2c1c;
+      --shadow:0 10px 30px rgba(0,0,0,.42), 0 2px 6px rgba(0,0,0,.30);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+  .wrap{max-width:1060px; margin:0 auto; padding:0 20px 72px}
+
+  /* ---------- Top menu ---------- */
+  .menu-bar{
+    position:sticky; top:0; z-index:50;
+    background:var(--bg);
+    padding:12px 20px 10px;
+  }
+  nav.menu{
+    max-width:1020px; margin:0 auto;
+    background:var(--card); border:1px solid var(--line-strong); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:7px;
+    display:flex; flex-wrap:wrap; gap:4px; align-items:center;
+  }
+  nav.menu .menu-label{
+    font-size:.76rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--terra); padding:0 8px 0 12px; white-space:nowrap;
+  }
+  nav.menu a{
+    color:var(--ink-soft); text-decoration:none; font-weight:700; font-size:.9rem;
+    padding:7px 13px; border-radius:10px; white-space:nowrap;
+    display:inline-flex; align-items:center; min-height:36px;
+  }
+  nav.menu a:hover{background:var(--bg-soft); color:var(--ink)}
+  nav.menu a.week-link{background:var(--terra-soft); color:var(--terra-strong)}
+  nav.menu a.week-link:hover{background:var(--terra-soft); color:var(--terra-strong); text-decoration:underline}
+  nav.menu a.moon-link{background:var(--gold-soft); color:var(--gold-strong)}
+  nav.menu a.moon-link:hover{background:var(--gold-soft); color:var(--gold-strong); text-decoration:underline}
+  .anchor{scroll-margin-top:96px}
+
+  /* ---------- Header ---------- */
+  header.top{padding:34px 0 8px}
+  .dateline{display:flex; flex-wrap:wrap; align-items:center; gap:10px; color:var(--muted); font-size:.86rem; font-weight:600; letter-spacing:.02em}
+  .dateline .dot{width:4px;height:4px;border-radius:50%;background:var(--line-strong)}
+  h1{
+    font-family:"Newsreader", Georgia, serif; font-weight:600;
+    font-size:clamp(2.1rem, 5.4vw, 3.3rem); line-height:1.06; letter-spacing:-.01em;
+    margin:12px 0 10px; max-width:16ch;
+  }
+  .lede{font-size:1.06rem; color:var(--ink-soft); max-width:58ch; margin:0}
+  .lede strong{color:var(--ink)}
+
+  /* ---------- Today's devotional ---------- */
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:38px 0 14px; flex-wrap:wrap}
+  .section-head h2{font-family:"Newsreader", Georgia, serif; font-size:1.65rem; font-weight:600; margin:0}
+  .section-head p{margin:0; color:var(--muted); font-size:.92rem}
+  .today-card{
+    background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .today-banner{
+    background:var(--terra-bg); color:#fff6ea; padding:18px 24px; display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; justify-content:space-between;
+  }
+  .today-banner .tb-left{display:flex; align-items:center; gap:12px; min-width:0}
+  .sun-ic{flex:none; width:38px; height:38px; border-radius:12px; background:rgba(255,255,255,.16); display:grid; place-items:center}
+  .today-banner .tb-kicker{font-size:.74rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; opacity:.88; margin:0}
+  .today-banner .tb-title{font-family:"Newsreader", Georgia, serif; font-size:1.35rem; font-weight:600; margin:1px 0 0; line-height:1.15}
+  .today-banner .tb-date{font-size:.9rem; font-weight:600; opacity:.92; white-space:nowrap}
+  .today-body{padding:24px}
+
+  .passage{
+    background:var(--card-2); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin:0 0 20px;
+  }
+  .passage .ref{font-size:.78rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--terra); margin:0 0 8px}
+  .passage blockquote{
+    margin:0; font-family:"Newsreader", Georgia, serif; font-size:1.22rem; line-height:1.5; font-style:italic; font-weight:500;
+  }
+  .passage .version + .version{margin-top:15px; padding-top:15px; border-top:1px solid var(--line)}
+  .passage .version-label{
+    font-size:.74rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold-strong); margin:0 0 5px;
+  }
+  .passage .version blockquote{font-size:1.13rem}
+  .block-label{font-size:.78rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--terra); margin:22px 0 7px}
+  .block-label:first-of-type{margin-top:0}
+  .dev-text{margin:0; color:var(--ink-soft); font-size:1.02rem; line-height:1.7}
+  .dev-text + .dev-text{margin-top:12px}
+  .prayer-box{
+    margin-top:22px; border:1px solid var(--line); border-radius:14px; padding:16px 18px;
+    background:var(--bg-soft);
+  }
+  .prayer-box .block-label{margin-top:0}
+  .prayer-box p{margin:0; color:var(--ink-soft); line-height:1.65; font-style:italic}
+  .action-box{
+    margin-top:14px; border:1px solid var(--line-strong); border-radius:14px; padding:16px 18px;
+    background:var(--gold-soft);
+  }
+  .action-box .block-label{margin-top:0; color:var(--gold-strong)}
+  .action-box p{margin:0; color:var(--ink); line-height:1.65}
+
+  button{font:inherit; cursor:pointer}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:10px 18px; min-height:40px;
+    font-weight:700; font-size:.92rem; border:1px solid var(--line-strong); background:var(--card); color:var(--ink);
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn.primary{background:var(--terra); border-color:var(--terra); color:#fff6ea}
+  .btn.primary:hover{background:var(--terra-strong)}
+  .btn:disabled{opacity:.45; cursor:default; transform:none}
+  .btn svg{flex:none}
+
+  /* ---------- Week 1 rows — full-width outlined rows ---------- */
+  .week-intro{margin:0 0 14px; color:var(--ink-soft); line-height:1.65; max-width:68ch}
+  .plan-list{display:flex; flex-direction:column; gap:10px; margin:0; padding:0; list-style:none}
+  .plan-list li{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 18px; display:flex; gap:14px; align-items:center; width:100%;
+    cursor:pointer; transition:background .15s ease, border-color .15s ease;
+  }
+  .plan-list li:hover{background:var(--card-2); border-color:var(--line-strong)}
+  .plan-list li.selected{border-color:var(--terra); background:var(--terra-soft)}
+  .plan-list li .pr-tap{color:var(--terra-strong); font-weight:700; white-space:nowrap}
+  .plan-list li > div{flex:1 1 auto; min-width:0}
+  .plan-list .pn{
+    flex:none; width:30px; height:30px; border-radius:50%; display:grid; place-items:center;
+    font-weight:800; font-size:.86rem; background:var(--bg-soft); color:var(--muted); border:1px solid var(--line);
+  }
+  .plan-list li.today .pn{background:var(--terra); color:#fff6ea; border-color:var(--terra)}
+  .plan-list .pt{font-weight:700; font-size:.95rem; line-height:1.35}
+  .plan-list .pr{font-size:.84rem; color:var(--muted); margin-top:2px}
+
+  .day-badge{
+    display:inline-flex; align-items:center; gap:7px; font-size:.76rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase;
+    background:var(--gold-soft); color:var(--gold-strong); border-radius:999px; padding:5px 11px;
+  }
+
+  /* ---------- Reader ---------- */
+  .reader[hidden]{display:none}
+  .reader{
+    margin-top:34px; background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow); overflow:hidden;
+  }
+  .reader-head{
+    padding:20px 24px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px; align-items:flex-start; justify-content:space-between;
+    background:var(--card-2);
+  }
+  .reader-head h2{font-family:"Newsreader", Georgia, serif; font-size:1.7rem; font-weight:600; margin:4px 0 3px; line-height:1.15}
+  .reader-head .rh-meta{color:var(--muted); font-size:.9rem; font-weight:600; margin:0}
+  .reader-body{padding:24px}
+  .reader-nav{display:flex; gap:10px; flex-wrap:wrap}
+
+  /* ---------- Other sites ---------- */
+  .site-list{display:flex; flex-direction:column; gap:10px; margin:0; padding:0; list-style:none}
+  .site-list a{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; display:flex; gap:14px; align-items:center; width:100%;
+    text-decoration:none; color:var(--ink); transition:background .15s ease, border-color .15s ease; min-height:44px;
+  }
+  .site-list a:hover{background:var(--card-2); border-color:var(--line-strong)}
+  .site-list a > div{flex:1 1 auto; min-width:0}
+  .site-list .st{font-weight:700; font-size:.98rem; line-height:1.35}
+  .site-list .sd{font-size:.86rem; color:var(--muted); margin-top:2px}
+  .site-list .s-arrow{color:var(--terra-strong); font-weight:700; white-space:nowrap}
+
+  footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; display:flex; flex-wrap:wrap; gap:8px 18px; justify-content:space-between}
+  footer p{margin:0}
+
+  :focus-visible{outline:2px solid var(--gold); outline-offset:2px; border-radius:6px}
+  @media (max-width:640px){
+    .wrap{padding:0 15px 56px}
+    .menu-bar{padding:10px 15px 8px}
+    .anchor{scroll-margin-top:150px}
+    header.top{padding-top:24px}
+    .today-body,.reader-body{padding:19px}
+    .today-banner,.reader-head{padding-left:19px; padding-right:19px}
+    .plan-list li .pr-tap{display:none}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="menu-bar">
+  <nav class="menu" aria-label="Page menu">
+    <span class="menu-label">Menu</span>
+    <a href="#today">Today</a>
+    <a href="#week" class="week-link">Week 1 — all seven days</a>
+    <a href="#other-sites">Other sites</a>
+    <a href="https://ejyoungr-hash.github.io/moon/" class="moon-link" target="_blank" rel="noopener">Moon site ↗</a>
+  </nav>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="dateline">
+      <span>Sunday, November 22, 2026</span><span class="dot" aria-hidden="true"></span>
+      <span>Week 1 · November 22–28, 2026</span>
+    </div>
+    <h1>Family Devotional</h1>
+    <p class="lede">A devotional for the whole family to share together — <strong>today's reading up top</strong>, and every day of Week 1 below, ready to open and read as a family.</p>
+  </header>
+
+  <!-- TODAY -->
+  <div class="section-head anchor" id="today">
+    <h2>Today's devotional</h2>
+    <p>Read together in about 10 minutes</p>
+  </div>
+  <article class="today-card" id="todayCard" aria-label="Today's devotional"></article>
+
+  <!-- WEEK 1 -->
+  <div class="section-head anchor" id="week">
+    <h2>Week 1</h2>
+    <p>Sunday, November 22 – Saturday, November 28 · tap any day to open it in the reader</p>
+  </div>
+  <p class="week-intro">All seven days of the first week are here. Day 1 is today's reading above; tap any day below to open its full devotional — passage, thought, prayer, and an action to do together.</p>
+  <ul class="plan-list" id="weekList"></ul>
+
+  <!-- READER — hidden on load so today's devotional is not shown a second time;
+       it appears only when a day is opened from the Week 1 list. -->
+  <section class="reader anchor" id="reader" aria-label="Devotional reader" hidden>
+    <div class="reader-head">
+      <div>
+        <span class="day-badge" id="readerBadge">Day 1</span>
+        <h2 id="readerTitle"></h2>
+        <p class="rh-meta" id="readerMeta"></p>
+      </div>
+      <div class="reader-nav">
+        <button class="btn" id="prevBtn" type="button">← Previous day</button>
+        <button class="btn" id="nextBtn" type="button">Next day →</button>
+        <button class="btn" id="closeBtn" type="button">Close</button>
+      </div>
+    </div>
+    <div class="reader-body" id="readerBody"></div>
+  </section>
+
+  <!-- OTHER SITES -->
+  <div class="section-head anchor" id="other-sites">
+    <h2>Other sites</h2>
+    <p>More to explore together</p>
+  </div>
+  <ul class="site-list">
+    <li>
+      <a href="https://ejyoungr-hash.github.io/moon/" target="_blank" rel="noopener">
+        <div>
+          <div class="st">The Moon site</div>
+          <div class="sd">Tonight's moon, the eight phases, photos, and a moon quiz.</div>
+        </div>
+        <span class="s-arrow">Visit ↗</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://ejyoungr-hash.github.io/daily-devotionals-for-men/" target="_blank" rel="noopener">
+        <div>
+          <div class="st">Daily Devotionals for Men</div>
+          <div class="sd">Daily readings for men, with today's devotional and a full archive.</div>
+        </div>
+        <span class="s-arrow">Visit ↗</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://ejyoungr-hash.github.io/daily-devotionals-for-women/" target="_blank" rel="noopener">
+        <div>
+          <div class="st">Daily Devotionals for Women</div>
+          <div class="sd">The companion daily devotional series for women.</div>
+        </div>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://ejyoungr-hash.github.io/teenager-devotional/" target="_blank" rel="noopener">
+        <div>
+          <div class="st">Teenager Devotional</div>
+          <div class="sd">Daily devotionals for teenagers.</div>
+        </div>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+    </li>
+  </ul>
+
+  <footer>
+    <p>Family Devotional — readings for the whole family to share together at home.</p>
+    <p>Week 1 · November 22–28, 2026</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var DAYS = [
+    {
+      day: 1,
+      date: "Sunday, November 22, 2026",
+      shortDate: "Sun, Nov 22",
+      title: "As for me and my house",
+      ref: "Joshua 24:15",
+      verseKJV: "\u201CAnd if it seem evil unto you to serve the LORD, choose you this day whom ye will serve; whether the gods which your fathers served that were on the other side of the flood, or the gods of the Amorites, in whose land ye dwell: but as for me and my house, we will serve the LORD.\u201D",
+      verseESV: "\u201CAnd if it is evil in your eyes to serve the LORD, choose this day whom you will serve, whether the gods your fathers served in the region beyond the River, or the gods of the Amorites in whose land you dwell. But as for me and my house, we will serve the LORD.\u201D",
+      verseNLT: "\u201CBut if you refuse to serve the LORD, then choose today whom you will serve. Would you prefer the gods your ancestors served beyond the Euphrates? Or will it be the gods of the Amorites in whose land you now live? But as for me and my family, we will serve the LORD.\u201D",
+      thought: "Joshua was speaking to a whole nation, but his words land just as clearly in a living room. Every family serves something. It might be God, or it might be the schedule, the next purchase, the opinion of others, or simply getting through the week. Joshua\u2019s challenge is that serving is not a default \u2014 it is a choice, and it is a choice a family makes together.\n\n\u201CAs for me and my house\u201D is a statement a family can stand on. It does not mean the family is perfect or that everyone always agrees. It means the direction is settled: in this house, God comes first. Children may not remember every lesson they hear, but they will remember what the household actually centered on.\n\nA family does not choose this once and forget about it. The choice shows up in small, ordinary places \u2014 how the morning starts, how conflict is handled, what gets celebrated, what gets forgiven. Choosing to serve the Lord together, one day at a time, is how a house becomes a home built on something that lasts.",
+      prayer: "Lord, we choose today to serve you in our home. Help us put you first in the big decisions and the small moments alike, and make our house a place where your love is the thing everyone can count on.",
+      action: "Sit together for a few minutes and let each person say one way the family can put God first this week. Pick one of those ideas and do it together before the week is over."
+    },
+    {
+      day: 2,
+      date: "Monday, November 23, 2026",
+      shortDate: "Mon, Nov 23",
+      title: "Love is patient and kind",
+      ref: "1 Corinthians 13:4-7",
+      verseKJV: "\u201CCharity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up, doth not behave itself unseemly, seeketh not her own, is not easily provoked, thinketh no evil; rejoiceth not in iniquity, but rejoiceth in the truth; beareth all things, believeth all things, hopeth all things, endureth all things.\u201D",
+      verseESV: "\u201CLove is patient and kind; love does not envy or boast; it is not arrogant or rude. It does not insist on its own way; it is not irritable or resentful; it does not rejoice at wrongdoing, but rejoices with the truth. Love bears all things, believes all things, hopes all things, endures all things.\u201D",
+      verseNLT: "\u201CLove is patient and kind. Love is not jealous or boastful or proud or rude. It does not demand its own way. It is not irritable, and it keeps no record of being wronged. It does not rejoice about injustice but rejoices whenever the truth wins out. Love never gives up, never loses faith, is always hopeful, and endures through every circumstance.\u201D",
+      thought: "This passage is read at weddings, but its real test is not the wedding day \u2014 it is an ordinary Tuesday at home. Patience when someone is slow. Kindness when someone is grumpy. Not keeping score when someone gets it wrong again. That is where love proves itself, and home is where it is practiced most.\n\nNotice what love does not do: it does not envy, it does not insist on its own way, it does not keep a record of wrongs. In a family, those are daily temptations. Someone got the bigger share, someone left the mess, someone said the sharp thing. Love chooses not to build a case. It chooses to bear with, believe the best, and keep hoping.\n\nA family that loves this way does not avoid hard moments \u2014 it moves through them differently. The goal is not to be a family that never disagrees. The goal is to be a family where everyone knows they are safe, even when things are tense, because love is patient and kind first.",
+      prayer: "Lord, teach us to love each other the way you love us. Make us patient when we are tired, kind when we are frustrated, and quick to believe the best about one another.",
+      action: "Each person in the family picks one other person and does one small, kind thing for them today without being asked \u2014 and without telling anyone they did it."
+    },
+    {
+      day: 3,
+      date: "Tuesday, November 24, 2026",
+      shortDate: "Tue, Nov 24",
+      title: "Train up a child",
+      ref: "Proverbs 22:6",
+      verseKJV: "\u201CTrain up a child in the way he should go: and when he is old, he will not depart from it.\u201D",
+      verseESV: "\u201CTrain up a child in the way he should go; even when he is old he will not depart from it.\u201D",
+      verseNLT: "\u201CDirect your children onto the right path, and when they are older, they will not leave it.\u201D",
+      thought: "Training a child is not a single conversation \u2014 it is the slow work of showing the way, day after day. Children learn far more from what they watch than from what they are told. The way a parent handles anger, tells the truth, apologizes, and treats others becomes the map a child follows long after they leave home.\n\nThis verse is a promise with a shape: the training goes in early, and the fruit shows up later. That means the work can feel invisible for a long time. A parent may wonder if any of it is landing. But seeds planted in the early years have a way of growing in their own season, often when no one is watching.\n\nIt also means the whole family is part of the training. Siblings, grandparents, everyone under the roof \u2014 each person models something. The way to train a child is not to lecture perfectly, but to walk the path together and keep pointing the same direction, in word and in deed.",
+      prayer: "Lord, give us wisdom to guide our children well. Help us teach by the way we live, not only by the words we say, and give us patience to keep planting seeds even when we cannot yet see them grow.",
+      action: "Parents, share one short story with the children about a lesson you learned when you were young. Then ask each child to share one thing they would like to learn or get better at this year."
+    },
+    {
+      day: 4,
+      date: "Wednesday, November 25, 2026",
+      shortDate: "Wed, Nov 25",
+      title: "Forgiving one another at home",
+      ref: "Colossians 3:13",
+      verseKJV: "\u201CForbearing one another, and forgiving one another, if any man have a quarrel against any: even as Christ forgave you, so also do ye.\u201D",
+      verseESV: "\u201Cbearing with one another and, if one has a complaint against another, forgiving each other; as the Lord has forgiven you, so you also must forgive.\u201D",
+      verseNLT: "\u201CMake allowance for each other\u2019s faults, and forgive anyone who offends you. Remember, the Lord forgave you, so you must forgive others.\u201D",
+      thought: "No family gets through a week without someone stepping on someone else\u2019s toes. A sharp word, a forgotten promise, a mess left for someone else \u2014 home is where our faults are most visible because home is where we are most ourselves. That is exactly why forgiveness has to live there first.\n\n\u201CBearing with one another\u201D comes before forgiving in this verse, and that order matters. It means making room for each other\u2019s weaknesses before they become offenses. Not everyone in a family moves at the same pace or handles things the same way. Grace starts with allowing that, instead of demanding that everyone be just like us.\n\nAnd the standard for forgiving is not \u201Cwhen they deserve it\u201D \u2014 it is \u201Cas the Lord has forgiven you.\u201D Every member of the family has been forgiven far more than they will ever be asked to forgive at home. When a family remembers that together, forgiveness stops feeling like losing and starts feeling like the most natural thing in the world.",
+      prayer: "Lord, you have forgiven us so much. Help us forgive each other quickly and completely, and teach us to make allowance for one another\u2019s faults the way you make allowance for ours.",
+      action: "If there is an unresolved hurt or argument in the family right now, take time today to talk it through calmly, say \u201CI\u2019m sorry\u201D where it is needed, and say \u201CI forgive you\u201D out loud."
+    },
+    {
+      day: 5,
+      date: "Thursday, November 26, 2026",
+      shortDate: "Thu, Nov 26",
+      title: "Give thanks together",
+      ref: "Psalm 100:4-5",
+      verseKJV: "\u201CEnter into his gates with thanksgiving, and into his courts with praise: be thankful unto him, and bless his name. For the LORD is good; his mercy is everlasting; and his truth endureth to all generations.\u201D",
+      verseESV: "\u201CEnter his gates with thanksgiving, and his courts with praise! Give thanks to him; bless his name! For the LORD is good; his steadfast love endures forever, and his faithfulness to all generations.\u201D",
+      verseNLT: "\u201CEnter his gates with thanksgiving; go into his courts with praise. Give thanks to him and praise his name. For the LORD is good. His unfailing love continues forever, and his faithfulness continues to each generation.\u201D",
+      thought: "Thanksgiving is not just a feeling \u2014 in this psalm, it is the way a family enters God\u2019s presence. Gratitude is the door. A family that practices thanking God together, out loud, starts to see the world differently. The same house, the same meals, the same ordinary days begin to look like gifts instead of givens.\n\nIt helps to name the thanks specifically. \u201CThank you for our home\u201D is good; \u201Cthank you for the way we laughed at dinner last night\u201D is better. When a family gets specific about what they are grateful for, they start noticing blessings they used to walk past without seeing.\n\nAnd the reason for the thanks goes beyond this year\u2019s blessings: \u201CHis steadfast love endures forever.\u201D The family\u2019s gratitude rests on something that does not change with the seasons. Good years and hard years both end at the same place \u2014 a good God whose love keeps going, generation after generation.",
+      prayer: "Lord, we come to you with thankful hearts. Thank you for our home, for each other, and for your love that never runs out. Help us to notice your goodness every day, not just on special days.",
+      action: "Go around the table or the room and let each person name three specific things they are thankful for this year. Write them down together and keep the list somewhere the family can see it."
+    },
+    {
+      day: 6,
+      date: "Friday, November 27, 2026",
+      shortDate: "Fri, Nov 27",
+      title: "A house built on the rock",
+      ref: "Matthew 7:24-25",
+      verseKJV: "\u201CTherefore whosoever heareth these sayings of mine, and doeth them, I will liken him unto a wise man, which built his house upon a rock: and the rain descended, and the floods came, and the winds blew, and beat upon that house; and it fell not: for it was founded upon a rock.\u201D",
+      verseESV: "\u201CEveryone then who hears these words of mine and does them will be like a wise man who built his house on the rock. And the rain fell, and the floods came, and the winds blew and beat on that house, but it did not fall, because it had been founded on the rock.\u201D",
+      verseNLT: "\u201CAnyone who listens to my teaching and follows it is wise, like a person who builds a house on solid rock. Though the rain comes in torrents and the floodwaters rise and the winds beat against that house, it won\u2019t collapse because it is built on bedrock.\u201D",
+      thought: "Jesus is clear about the difference: the wise builder does not just hear the words \u2014 he does them. Two houses can look the same on a calm day. The difference only shows when the storm comes, and storms come to every family eventually. Sickness, money pressure, loss, disappointment \u2014 the rain falls on every roof.\n\nA family built on the rock is not a family without storms. It is a family that does not collapse when the storm hits, because what holds it together is deeper than feelings or circumstances. Hearing God\u2019s word together and putting it into practice \u2014 forgiving, telling the truth, serving one another \u2014 is how a family pours its foundation.\n\nThe good news is that the foundation is laid in ordinary days, not in a crisis. Every time a family chooses obedience in a small thing, they are building on rock. When the hard day comes, they will stand on the strength of all those small choices made together.",
+      prayer: "Lord, help us not only to hear your words but to live them out together. Be the rock under our home, so that when storms come, we stand firm because we stand on you.",
+      action: "As a family, pick one teaching of Jesus to practice together this week \u2014 for example, forgiving quickly, telling the truth even when it is hard, or helping someone in need \u2014 and talk about how it went at the end of the week."
+    },
+    {
+      day: 7,
+      date: "Saturday, November 28, 2026",
+      shortDate: "Sat, Nov 28",
+      title: "Praying together",
+      ref: "Matthew 18:20",
+      verseKJV: "\u201CFor where two or three are gathered together in my name, there am I in the midst of them.\u201D",
+      verseESV: "\u201CFor where two or three are gathered in my name, there am I among them.\u201D",
+      verseNLT: "\u201CFor where two or three gather together as my followers, I am there among them.\u201D",
+      thought: "This is one of the shortest promises in the Bible, and one of the most comforting for a family. It does not say where a crowd gathers, or where the experts gather, or where everything is done perfectly. It says where two or three gather in his name \u2014 and a family is already that many.\n\nPraying together does not have to be long or fancy. A short prayer before a meal, a few honest words before bed, a quick \u201CLord, help us with this\u201D in a hard moment \u2014 all of it counts. What matters is that the family turns to God together, not just alone. Children who hear their parents pray learn that God is real in a way no lesson can teach.\n\nThere is also a promise tucked inside this verse: when a family gathers in his name, Jesus is there among them. He is not distant from the family\u2019s daily life. He is present in the kitchen, the car, the living room \u2014 wherever two or three of his people gather and call on him together.",
+      prayer: "Lord, thank you for being with us whenever we gather in your name. Help us to pray together often \u2014 in good times and hard times \u2014 and to remember that you are always in the middle of our family.",
+      action: "Set aside a few minutes tonight to pray together as a family. Let each person pray out loud about one thing \u2014 something they are thankful for, something they are worried about, or someone they want God to help."
+    }
+  ];
+
+  var TODAY_INDEX = 0;
+  var currentIndex = -1;
+
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function paragraphs(text){
+    return text.split("\n\n").map(function(p){ return '<p class="dev-text">' + esc(p) + '</p>'; }).join("");
+  }
+  function devotionalBody(d){
+    var html = '';
+    html += '<div class="passage"><p class="ref">Passage · ' + esc(d.ref) + '</p>';
+    html += '<div class="version"><p class="version-label">KJV</p><blockquote>' + esc(d.verseKJV) + '</blockquote></div>';
+    html += '<div class="version"><p class="version-label">ESV</p><blockquote>' + esc(d.verseESV) + '</blockquote></div>';
+    html += '<div class="version"><p class="version-label">NLT</p><blockquote>' + esc(d.verseNLT) + '</blockquote></div>';
+    html += '</div>';
+    html += '<p class="block-label">Thought</p>' + paragraphs(d.thought);
+    html += '<div class="prayer-box"><p class="block-label">Prayer prompt</p><p>&ldquo;' + esc(d.prayer) + '&rdquo;</p></div>';
+    html += '<div class="action-box"><p class="block-label">Today&rsquo;s action — do it together</p><p>' + esc(d.action) + '</p></div>';
+    return html;
+  }
+  var sunSVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+
+  function renderToday(){
+    var d = DAYS[TODAY_INDEX];
+    var el = document.getElementById("todayCard");
+    el.innerHTML =
+      '<div class="today-banner"><div class="tb-left"><span class="sun-ic">' + sunSVG + '</span>' +
+      '<div><p class="tb-kicker">Today · Day ' + d.day + ' of Week 1</p>' +
+      '<p class="tb-title">' + esc(d.title) + '</p></div></div>' +
+      '<span class="tb-date">' + esc(d.date) + '</span></div>' +
+      '<div class="today-body">' + devotionalBody(d) + '</div>';
+  }
+
+  function renderWeek(){
+    var list = document.getElementById("weekList");
+    list.innerHTML = "";
+    DAYS.forEach(function(d, i){
+      var li = document.createElement("li");
+      if (i === TODAY_INDEX) li.className = "today";
+      if (i === currentIndex) li.classList.add("selected");
+      li.setAttribute("role","button");
+      li.setAttribute("tabindex","0");
+      li.setAttribute("aria-label","Open Day " + d.day + ": " + d.title);
+      li.innerHTML =
+        '<span class="pn" aria-hidden="true">' + d.day + '</span>' +
+        '<div><div class="pt">Day ' + d.day + ' — ' + esc(d.title) + (i === TODAY_INDEX ? ' · Today' : '') + '</div>' +
+        '<div class="pr">' + esc(d.date) + ' · ' + esc(d.ref) + '</div></div>' +
+        '<span class="pr-tap">Tap to read →</span>';
+      li.addEventListener("click", function(){ openDay(i, true); });
+      li.addEventListener("keydown", function(e){
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDay(i, true); }
+      });
+      list.appendChild(li);
+    });
+  }
+
+  function openDay(i, scroll){
+    currentIndex = i;
+    var d = DAYS[i];
+    var reader = document.getElementById("reader");
+    document.getElementById("readerBadge").textContent = "Day " + d.day + (i === TODAY_INDEX ? " · Today" : "");
+    document.getElementById("readerTitle").textContent = d.title;
+    document.getElementById("readerMeta").textContent = d.date + " · " + d.ref;
+    document.getElementById("readerBody").innerHTML = devotionalBody(d);
+    document.getElementById("prevBtn").disabled = (i === 0);
+    document.getElementById("nextBtn").disabled = (i === DAYS.length - 1);
+    reader.hidden = false;
+    renderWeek();
+    if (scroll) reader.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  document.getElementById("prevBtn").addEventListener("click", function(){
+    if (currentIndex > 0) openDay(currentIndex - 1, true);
+  });
+  document.getElementById("nextBtn").addEventListener("click", function(){
+    if (currentIndex < DAYS.length - 1) openDay(currentIndex + 1, true);
+  });
+  document.getElementById("closeBtn").addEventListener("click", function(){
+    document.getElementById("reader").hidden = true;
+    currentIndex = -1;
+    renderWeek();
+    document.getElementById("week").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
+  renderToday();
+  renderWeek();
+})();
+</script>
+</body>
+</html>
